@@ -706,7 +706,7 @@ export function ConfigEditorPage() {
 	return (
 		<div className="space-y-4 ">
 			<nav
-				className="px-2 py-3 flex items-center justify-between sticky top-0 bg-background z-10 border-b"
+				className="px-5 py-3 flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-md z-10"
 				data-tauri-drag-region
 			>
 				<Button asChild variant="ghost" size="sm">

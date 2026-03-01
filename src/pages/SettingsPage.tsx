@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FaXTwitter } from "react-icons/fa6";
+import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import {
 	Select,
@@ -37,18 +38,9 @@ export function SettingsPage() {
 	};
 
 	return (
-		<div className="">
-			<div
-				className="flex items-center p-3 border-b px-3 justify-between sticky top-0 bg-background z-10 mb-4"
-				data-tauri-drag-region
-			>
-				<div data-tauri-drag-region>
-					<h3 className="font-bold" data-tauri-drag-region>
-						{t("settings.title")}
-					</h3>
-				</div>
-			</div>
-			<div className="space-y-6 px-4 ">
+		<div>
+			<PageHeader title={t("settings.title")} />
+			<div className="space-y-6 px-5">
 				<div>
 					<label className="block text-sm font-medium mb-2 mx-2">
 						{t("settings.language")}

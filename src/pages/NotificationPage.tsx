@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { PageHeader } from "@/components/PageHeader";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
@@ -47,17 +48,22 @@ export function NotificationPage() {
 
 	if (isLoading) {
 		return (
-			<div className="">
+			<div>
 				<div
-					className="flex items-center p-3 border-b px-3 justify-between sticky top-0 bg-background z-10 mb-4"
+					className="sticky top-0 z-10 bg-background/80 backdrop-blur-md"
 					data-tauri-drag-region
 				>
-					<div data-tauri-drag-region>
-						<Skeleton className="h-6 w-32 mb-1" />
-						<Skeleton className="h-4 w-48" />
+					<div
+						className="flex items-center justify-between px-5 pt-5 pb-3"
+						data-tauri-drag-region
+					>
+						<div data-tauri-drag-region>
+							<Skeleton className="h-6 w-32 mb-1" />
+							<Skeleton className="h-4 w-48" />
+						</div>
 					</div>
 				</div>
-				<div className="px-4 flex flex-col bg-card mx-4 rounded-lg py-1 border space-y-4">
+				<div className="px-5 flex flex-col bg-card mx-5 rounded-lg py-1 border space-y-4">
 					<div className="border-b px-1 py-3">
 						<div className="flex items-center justify-between">
 							<Skeleton className="h-4 w-24" />
@@ -85,21 +91,12 @@ export function NotificationPage() {
 	}
 
 	return (
-		<div className="">
-			<div
-				className="flex items-center p-3 border-b px-3 justify-between sticky top-0 bg-background z-10 mb-4"
-				data-tauri-drag-region
-			>
-				<div data-tauri-drag-region>
-					<h3 className="font-bold" data-tauri-drag-region>
-						{t("notifications.title")}
-					</h3>
-					<p className="text-sm text-muted-foreground" data-tauri-drag-region>
-						{t("notifications.description")}
-					</p>
-				</div>
-			</div>
-			<div className="px-4 flex flex-col bg-card mx-4 rounded-lg py-1 border">
+		<div>
+			<PageHeader
+				title={t("notifications.title")}
+				description={t("notifications.description")}
+			/>
+			<div className="px-5 flex flex-col bg-card mx-5 rounded-lg py-1 border">
 				<div className="border-b px-1 py-3">
 					<div className="flex items-center justify-between">
 						<Label htmlFor="notification" className="">

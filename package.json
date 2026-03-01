@@ -18,6 +18,8 @@
 		"@codemirror/language-data": "^6.5.1",
 		"@hookform/resolvers": "^5.2.2",
 		"@lobehub/icons": "^2.38.0",
+		"@mantine/core": "^8.3.15",
+		"@mantine/hooks": "^8.3.15",
 		"@radix-ui/react-accordion": "^1.2.12",
 		"@radix-ui/react-alert-dialog": "^1.1.15",
 		"@radix-ui/react-dialog": "^1.1.15",

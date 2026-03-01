@@ -21,6 +21,7 @@ export function GLMBanner(props: {
 	const [isDismissed, setIsDismissed] = useState(
 		localStorage.getItem("glm-banner-dismissed") === "true",
 	);
+	const [glmOpen, setGlmOpen] = useState(false);
 
 	const handleDismiss = () => {
 		localStorage.setItem("glm-banner-dismissed", "true");
@@ -53,14 +54,14 @@ export function GLMBanner(props: {
 				</TooltipProvider>
 			</h3>
 			<div className="flex items-center gap-1">
-				<GLMDialog
-					trigger={
-						<Button size="sm" variant="outline" className="text-sm">
-							{t("glm.startConfig")}
-						</Button>
-					}
-					onSuccess={handleDismiss}
-				/>
+				<Button
+					size="sm"
+					variant="outline"
+					className="text-sm"
+					onClick={() => setGlmOpen(true)}
+				>
+					{t("glm.startConfig")}
+				</Button>
 				{!props.hideCloseButton && (
 					<Button
 						size="sm"
@@ -72,6 +73,11 @@ export function GLMBanner(props: {
 					</Button>
 				)}
 			</div>
+			<GLMDialog
+				opened={glmOpen}
+				onClose={() => setGlmOpen(false)}
+				onSuccess={handleDismiss}
+			/>
 		</div>
 	);
 }

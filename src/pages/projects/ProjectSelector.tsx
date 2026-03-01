@@ -34,11 +34,11 @@ export function ProjectSelector({ projects }: ProjectSelectorProps) {
 
 	return (
 		<div
-			className="flex items-center p-3 border-b bg-background sticky top-0 z-10"
+			className="flex items-center px-5 pt-5 pb-3 bg-background/80 backdrop-blur-md sticky top-0 z-10"
 			data-tauri-drag-region
 		>
 			<div className="flex items-center gap-2 flex-1" data-tauri-drag-region>
-				<h3 className="font-bold" data-tauri-drag-region>
+				<h3 className="text-base font-semibold tracking-tight" data-tauri-drag-region>
 					Projects
 				</h3>
 			</div>

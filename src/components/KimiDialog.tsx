@@ -3,24 +3,22 @@ import { ExternalLinkIcon } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useCreateConfig, useSetCurrentConfig } from "@/lib/query";
-import { Button } from "./ui/button";
 import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "./ui/dialog";
-import { Input } from "./ui/input";
+	Anchor,
+	Button,
+	Modal,
+	PasswordInput,
+	Stack,
+	Text,
+} from "@mantine/core";
 
 export function KimiDialog(props: {
-	trigger: React.ReactNode;
+	opened: boolean;
+	onClose: () => void;
 	onSuccess?: () => void;
 }) {
 	const { t } = useTranslation();
 	const [apiKey, setApiKey] = useState("");
-	const [isOpen, setIsOpen] = useState(false);
 	const createConfigMutation = useCreateConfig();
 	const setCurrentConfigMutation = useSetCurrentConfig();
 
@@ -45,10 +43,8 @@ export function KimiDialog(props: {
 			});
 
 			await setCurrentConfigMutation.mutateAsync(store.id);
-
-			setIsOpen(false);
+			props.onClose();
 			setApiKey("");
-
 			props.onSuccess?.();
 		} catch (error) {
 			console.error("Failed to create Kimi config:", error);
@@ -56,75 +52,62 @@ export function KimiDialog(props: {
 	};
 
 	return (
-		<Dialog open={isOpen} onOpenChange={setIsOpen}>
-			<DialogTrigger asChild>{props.trigger}</DialogTrigger>
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>{t("kimi.config")}</DialogTitle>
-					<DialogDescription>{t("kimi.description")}</DialogDescription>
-				</DialogHeader>
-				<div className="mt-4">
-					<div className="space-y-3">
-						<div className="space-y-2">
-							<h2 className="text-card-foreground text-sm font-medium flex items-center gap-2">
-								{t("kimi.step1")}
-							</h2>
+		<Modal
+			centered
+			opened={props.opened}
+			onClose={props.onClose}
+			title={t("kimi.config")}
+			radius="lg"
+		>
+			<Stack gap="lg">
+				<Text size="sm" c="dimmed">
+					{t("kimi.description")}
+				</Text>
 
-							<div className="space-y-2 bg-secondary p-3 rounded-lg">
-								<Button
-									onClick={(_) => {
-										openUrl("https://www.kimi.com/");
-									}}
-									size="sm"
-									variant="outline"
-									className="text-sm"
-								>
-									<ExternalLinkIcon />
-									{t("kimi.goToKimi")}
-								</Button>
-								<p className="text-muted-foreground text-sm">
-									{t("kimi.step1Description")}
-								</p>
-							</div>
-						</div>
+				<Stack gap="xs">
+					<Text size="sm" fw={500}>
+						{t("kimi.step1")}
+					</Text>
+					<Anchor
+						size="sm"
+						onClick={() => openUrl("https://www.kimi.com/")}
+						style={{ cursor: "pointer" }}
+					>
+						<ExternalLinkIcon size={12} style={{ display: "inline", marginRight: 4, verticalAlign: "middle" }} />
+						{t("kimi.goToKimi")}
+					</Anchor>
+					<Text size="xs" c="dimmed">
+						{t("kimi.step1Description")}
+					</Text>
+				</Stack>
 
-						<div className="space-y-2">
-							<h2 className="text-card-foreground text-sm font-medium flex items-center gap-2">
-								{t("kimi.step2")}
-							</h2>
-							<div className="space-y-2 bg-secondary p-3 rounded-lg">
-								<p className="text-muted-foreground text-sm">
-									{t("kimi.step2Description")}
-								</p>
-							</div>
-						</div>
+				<Stack gap="xs">
+					<Text size="sm" fw={500}>
+						{t("kimi.step2")}
+					</Text>
+					<Text size="xs" c="dimmed">
+						{t("kimi.step2Description")}
+					</Text>
+				</Stack>
 
-						<div className="space-y-2">
-							<h2 className="text-card-foreground text-sm font-medium flex items-center gap-2">
-								{t("kimi.step3")}
-							</h2>
-							<div className="space-y-2 bg-secondary p-3 rounded-lg">
-								<Input
-									value={apiKey}
-									onChange={(e) => setApiKey(e.target.value)}
-									placeholder={t("kimi.apiKeyPlaceholder")}
-								/>
-							</div>
-						</div>
+				<PasswordInput
+					label={t("kimi.step3")}
+					value={apiKey}
+					onChange={(e) => setApiKey(e.target.value)}
+					placeholder={t("kimi.apiKeyPlaceholder")}
+					radius="md"
+				/>
 
-						<div className="flex justify-end mx-2 mt-2">
-							<Button
-								onClick={handleCreateConfig}
-								disabled={!apiKey.trim() || createConfigMutation.isPending}
-							>
-								{createConfigMutation.isPending
-									? t("kimi.creating")
-									: t("kimi.createConfig")}
-							</Button>
-						</div>
-					</div>
-				</div>
-			</DialogContent>
-		</Dialog>
+				<Button
+					fullWidth
+					radius="md"
+					onClick={handleCreateConfig}
+					disabled={!apiKey.trim() || createConfigMutation.isPending}
+					loading={createConfigMutation.isPending}
+				>
+					{t("kimi.createConfig")}
+				</Button>
+			</Stack>
+		</Modal>
 	);
 }

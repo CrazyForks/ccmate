@@ -7,6 +7,7 @@ import {
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ActivityGrid } from "@/components/ActivityGrid";
+import { PageHeader } from "@/components/PageHeader";
 import { TokenUsageChart } from "@/components/TokenUsageChart";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -35,46 +36,31 @@ export function UsagePage() {
 
 	return (
 		<TooltipProvider>
-			<div
-				className="flex flex-col p-3 border-b px-3 sticky top-0 bg-background z-10 mb-4"
-				data-tauri-drag-region
-			>
-				<div
-					className="flex items-center justify-between"
-					data-tauri-drag-region
-				>
-					<div data-tauri-drag-region>
-						<h3 className="font-bold" data-tauri-drag-region>
-							{t("usage.title")}
-						</h3>
-						<p className="text-sm text-muted-foreground" data-tauri-drag-region>
-							{t("usage.description")}
-						</p>
-					</div>
-
-					<div className="flex items-center gap-2">
-						<Button
-							disabled={isRefetching || isLoading}
-							onClick={(_) => {
-								refetch();
-							}}
-							variant="ghost"
-							size="sm"
-							className="text-muted-foreground h-8 px-3"
-						>
-							<RefreshCwIcon
-								className={cn({
-									"animate-spin": isRefetching || isLoading,
-								})}
-							/>
-							{isRefetching || isLoading
-								? t("usage.refreshing")
-								: t("usage.refresh")}
-						</Button>
-					</div>
-				</div>
-			</div>
-			<div className="px-4 space-y-4">
+			<PageHeader
+				title={t("usage.title")}
+				description={t("usage.description")}
+				actions={
+					<Button
+						disabled={isRefetching || isLoading}
+						onClick={(_) => {
+							refetch();
+						}}
+						variant="ghost"
+						size="sm"
+						className="text-muted-foreground h-8 px-3"
+					>
+						<RefreshCwIcon
+							className={cn({
+								"animate-spin": isRefetching || isLoading,
+							})}
+						/>
+						{isRefetching || isLoading
+							? t("usage.refreshing")
+							: t("usage.refresh")}
+					</Button>
+				}
+			/>
+			<div className="px-5 space-y-4">
 				{isLoading ? (
 					<div className="space-y-6">
 						<div className="p-1 border rounded-lg pb-5">

@@ -1,18 +1,21 @@
 import { Kimi, Minimax, ZAI } from "@lobehub/icons";
-import { EllipsisVerticalIcon, PencilLineIcon, PlusIcon } from "lucide-react";
+import {
+	ActionIcon,
+	Badge,
+	Button,
+	Divider,
+	Menu,
+	Paper,
+	Text,
+} from "@mantine/core";
+import { PencilLineIcon, PlusIcon } from "lucide-react";
+import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { GLMDialog } from "@/components/GLMBanner";
 import { KimiDialog } from "@/components/KimiDialog";
 import { MiniMaxDialog } from "@/components/MiniMaxDialog";
-import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { PageHeader } from "@/components/PageHeader";
 import { cn } from "@/lib/utils";
 import {
 	useCreateConfig,
@@ -23,10 +26,29 @@ import {
 
 export function ConfigSwitcherPage() {
 	return (
-		<div className="">
+		<div>
 			<section>
 				<ConfigStores />
 			</section>
+		</div>
+	);
+}
+
+function RadioIndicator({ active }: { active: boolean }) {
+	return (
+		<div
+			className={cn(
+				"w-4 h-4 rounded-full border-2 shrink-0 transition-colors duration-150",
+				active
+					? "border-[var(--mantine-color-brand-6)] bg-[var(--mantine-color-brand-6)]"
+					: "border-[var(--mantine-color-gray-4)]",
+			)}
+		>
+			{active && (
+				<div className="w-full h-full rounded-full flex items-center justify-center">
+					<div className="w-1.5 h-1.5 rounded-full bg-white" />
+				</div>
+			)}
 		</div>
 	);
 }
@@ -62,192 +84,166 @@ function ConfigStores() {
 		navigate(`/edit/${store.id}`);
 	};
 
-	if (stores.length === 0) {
-		return (
-			<div
-				className="flex justify-center items-center h-screen"
-				data-tauri-drag-region
-			>
-				<div className="flex flex-col items-center gap-2">
-					<Button variant="ghost" onClick={onCreateStore} className="">
-						<PlusIcon size={14} />
-						{t("configSwitcher.createConfig")}
-					</Button>
+	const [glmOpen, setGlmOpen] = useState(false);
+	const [minimaxOpen, setMinimaxOpen] = useState(false);
+	const [kimiOpen, setKimiOpen] = useState(false);
 
-					<p className="text-sm text-muted-foreground" data-tauri-drag-region>
-						{t("configSwitcher.description")}
-					</p>
-
-					<div className="mt-4 space-y-2">
-						<GLMDialog
-							trigger={
-								<Button
-									variant="ghost"
-									className="text-muted-foreground text-sm"
-									size="sm"
-								>
-									<ZAI />
-									{t("glm.useZhipuGlm")}
-								</Button>
-							}
-						/>
-						<MiniMaxDialog
-							trigger={
-								<Button
-									variant="ghost"
-									className="text-muted-foreground text-sm"
-									size="sm"
-								>
-									<Minimax />
-									{t("minimax.useMiniMax")}
-								</Button>
-							}
-						/>
-						<KimiDialog
-							trigger={
-								<Button
-									variant="ghost"
-									className="text-muted-foreground text-sm"
-									size="sm"
-								>
-									<Kimi />
-									{t("kimi.useKimi")}
-								</Button>
-							}
-						/>
-					</div>
-				</div>
-			</div>
-		);
-	}
+	const headerActions = (
+		<Menu position="bottom-end">
+			<Menu.Target>
+				<Button variant="subtle" size="xs" leftSection={<PlusIcon size={14} />}>
+					{t("configSwitcher.createConfig")}
+				</Button>
+			</Menu.Target>
+			<Menu.Dropdown>
+				<Menu.Item
+					leftSection={<PlusIcon size={14} />}
+					onClick={onCreateStore}
+				>
+					{t("configSwitcher.newConfig")}
+				</Menu.Item>
+				<Menu.Divider />
+				<Menu.Item
+					leftSection={<ZAI size={16} />}
+					onClick={() => setGlmOpen(true)}
+				>
+					{t("glm.useZhipuGlm")}
+				</Menu.Item>
+				<Menu.Item
+					leftSection={<Minimax size={16} />}
+					onClick={() => setMinimaxOpen(true)}
+				>
+					{t("minimax.useMiniMax")}
+				</Menu.Item>
+				<Menu.Item
+					leftSection={<Kimi size={16} />}
+					onClick={() => setKimiOpen(true)}
+				>
+					{t("kimi.useKimi")}
+				</Menu.Item>
+			</Menu.Dropdown>
+		</Menu>
+	);
 
 	return (
-		<div className="">
-			<div
-				className="flex items-center p-3 border-b px-3 justify-between sticky top-0 bg-background z-10"
-				data-tauri-drag-region
-			>
-				<div data-tauri-drag-region>
-					<h3 className="font-bold" data-tauri-drag-region>
-						{t("configSwitcher.title")}
-					</h3>
-					<p className="text-sm text-muted-foreground" data-tauri-drag-region>
-						{t("configSwitcher.description")}
-					</p>
-				</div>
-				<ButtonGroup>
-					<Button
-						variant="outline"
-						onClick={onCreateStore}
-						className="text-muted-foreground"
-						size="sm"
-					>
-						<PlusIcon size={14} />
-						{t("configSwitcher.createConfig")}
-					</Button>
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button
-								variant="outline"
-								className="text-muted-foreground"
-								size="sm"
-							>
-								<EllipsisVerticalIcon size={14} />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end">
-							<GLMDialog
-								trigger={
-									<DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-										<ZAI />
-										{t("glm.useZhipuGlm")}
-									</DropdownMenuItem>
-								}
-							/>
-							<MiniMaxDialog
-								trigger={
-									<DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-										<Minimax />
-										{t("minimax.useMiniMax")}
-									</DropdownMenuItem>
-								}
-							/>
-							<KimiDialog
-								trigger={
-									<DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-										<Kimi />
-										{t("kimi.useKimi")}
-									</DropdownMenuItem>
-								}
-							/>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				</ButtonGroup>
-			</div>
+		<div>
+			<PageHeader
+				title={t("configSwitcher.title")}
+				description={t("configSwitcher.description")}
+				actions={headerActions}
+			/>
 
-			{/* <GLMBanner className="mx-4 mt-4" /> */}
-
-			<div className="grid grid-cols-3 lg:grid-cols-4 gap-3 p-4">
-				{/* Fixed Claude Original Config Item */}
-				<div
-					role="button"
-					onClick={handleOriginalConfigClick}
-					className={cn(
-						"border rounded-xl p-3 h-[100px] flex flex-col justify-between transition-colors",
-						{
-							"bg-primary/10 border-primary border-2": isOriginalConfigActive,
-						},
-					)}
+			<div className="px-5 pb-5">
+				<Paper
+					withBorder
+					p={0}
+					style={{ overflow: "hidden" }}
 				>
-					<div>
-						<div>{t("configSwitcher.originalConfig")}</div>
-						<div className="text-xs text-muted-foreground mt-1">
-							{t("configSwitcher.originalConfigDescription")}
+					{/* Original config row */}
+					<div
+						onClick={handleOriginalConfigClick}
+						className={cn(
+							"flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors duration-150",
+							isOriginalConfigActive
+								? "bg-[color-mix(in_srgb,var(--mantine-color-brand-6)_4%,transparent)]"
+								: "hover:bg-[hsl(var(--foreground)/0.02)]",
+						)}
+					>
+						<RadioIndicator active={isOriginalConfigActive} />
+						<div className="flex-1 min-w-0">
+							<div className="flex items-center gap-2">
+								<Text
+									fw={isOriginalConfigActive ? 600 : 500}
+									size="sm"
+								>
+									{t("configSwitcher.originalConfig")}
+								</Text>
+								<Badge variant="light" color="gray" size="xs">
+									{t("configSwitcher.default")}
+								</Badge>
+							</div>
+							<Text size="xs" c="dimmed" mt={2}>
+								{t("configSwitcher.originalConfigDescription")}
+							</Text>
 						</div>
 					</div>
-				</div>
 
-				{stores.map((store) => {
-					const isCurrentStore = store.using;
-					return (
-						<div
-							role="button"
-							key={store.id}
-							onClick={() => handleStoreClick(store.id, isCurrentStore)}
-							className={cn(
-								"border rounded-xl p-3 h-[100px] flex flex-col justify-between transition-colors disabled:opacity-50",
-								{
-									"bg-primary/10 border-primary border-2": isCurrentStore,
-								},
-							)}
-						>
-							<div>
-								<div>{store.title}</div>
-								{store.settings.env?.ANTHROPIC_BASE_URL && (
-									<div
-										className="text-xs text-muted-foreground mt-1 truncate "
-										title={store.settings.env.ANTHROPIC_BASE_URL}
-									>
-										{store.settings.env.ANTHROPIC_BASE_URL}
-									</div>
-								)}
-							</div>
-
-							<div className="flex justify-end">
-								<button
-									className="hover:bg-primary/10 rounded-lg p-2 hover:text-primary"
-									onClick={(e) => {
-										e.stopPropagation();
-										navigate(`/edit/${store.id}`);
-									}}
+					{/* User config rows */}
+					{stores.map((store) => {
+						const isCurrentStore = store.using;
+						return (
+							<Fragment key={store.id}>
+								<Divider />
+								<div
+									onClick={() =>
+										handleStoreClick(store.id, isCurrentStore)
+									}
+									className={cn(
+										"flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors duration-150",
+										isCurrentStore
+											? "bg-[color-mix(in_srgb,var(--mantine-color-brand-6)_4%,transparent)]"
+											: "hover:bg-[hsl(var(--foreground)/0.02)]",
+									)}
 								>
-									<PencilLineIcon className="text-muted-foreground" size={14} />
-								</button>
-							</div>
-						</div>
-					);
-				})}
+									<RadioIndicator active={isCurrentStore} />
+									<div className="flex-1 min-w-0">
+										<Text
+											fw={isCurrentStore ? 600 : 500}
+											size="sm"
+										>
+											{store.title}
+										</Text>
+										{store.settings.env?.ANTHROPIC_BASE_URL && (
+											<Text
+												size="xs"
+												c="dimmed"
+												truncate
+												mt={2}
+												title={
+													store.settings.env.ANTHROPIC_BASE_URL
+												}
+											>
+												{store.settings.env.ANTHROPIC_BASE_URL}
+											</Text>
+										)}
+									</div>
+									<ActionIcon
+										variant="transparent"
+										color="dimmed"
+										size="sm"
+										onClick={(e) => {
+											e.stopPropagation();
+											navigate(`/edit/${store.id}`);
+										}}
+									>
+										<PencilLineIcon size={14} />
+									</ActionIcon>
+								</div>
+							</Fragment>
+						);
+					})}
+				</Paper>
+
+				{stores.length === 0 && (
+					<div className="text-center mt-4">
+						<Text size="sm" c="dimmed">
+							{t("configSwitcher.description")}
+						</Text>
+						<Button
+							variant="subtle"
+							onClick={onCreateStore}
+							leftSection={<PlusIcon size={14} />}
+							mt="xs"
+						>
+							{t("configSwitcher.createConfig")}
+						</Button>
+					</div>
+				)}
 			</div>
+
+			<GLMDialog opened={glmOpen} onClose={() => setGlmOpen(false)} />
+			<MiniMaxDialog opened={minimaxOpen} onClose={() => setMinimaxOpen(false)} />
+			<KimiDialog opened={kimiOpen} onClose={() => setKimiOpen(false)} />
 		</div>
 	);
 }

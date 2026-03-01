@@ -3,28 +3,28 @@ import { ExternalLinkIcon } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useCreateConfig, useSetCurrentConfig } from "@/lib/query";
-import { Button } from "./ui/button";
 import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "./ui/dialog";
-import { Input } from "./ui/input";
-import { NativeSelect, NativeSelectOption } from "./ui/native-select";
+	Anchor,
+	Button,
+	Modal,
+	NativeSelect,
+	PasswordInput,
+	Stack,
+	Text,
+} from "@mantine/core";
 
 export function GLMDialog(props: {
-	trigger: React.ReactNode;
+	opened: boolean;
+	onClose: () => void;
 	onSuccess?: () => void;
 }) {
 	const { t } = useTranslation();
 	const [apiKey, setApiKey] = useState("");
 	const [selectedRegion, setSelectedRegion] = useState("china-mainland");
-	const [isOpen, setIsOpen] = useState(false);
 	const createConfigMutation = useCreateConfig();
 	const setCurrentConfigMutation = useSetCurrentConfig();
+
+	const isZai = selectedRegion === "z-ai";
 
 	const handleCreateConfig = async () => {
 		if (!apiKey.trim()) {
@@ -32,14 +32,12 @@ export function GLMDialog(props: {
 		}
 
 		try {
-			const baseUrl =
-				selectedRegion === "z-ai"
-					? "https://api.z.ai/api/anthropic"
-					: "https://open.bigmodel.cn/api/anthropic";
+			const baseUrl = isZai
+				? "https://api.z.ai/api/anthropic"
+				: "https://open.bigmodel.cn/api/anthropic";
 
 			const store = await createConfigMutation.mutateAsync({
-				title:
-					selectedRegion === "z-ai" ? t("glm.zaiTitle") : t("glm.zhipuTitle"),
+				title: isZai ? t("glm.zaiTitle") : t("glm.zhipuTitle"),
 				settings: {
 					env: {
 						ANTHROPIC_AUTH_TOKEN: apiKey.trim(),
@@ -52,14 +50,10 @@ export function GLMDialog(props: {
 				},
 			});
 
-			// Set the newly created config as the current/active config
 			await setCurrentConfigMutation.mutateAsync(store.id);
-
-			setIsOpen(false);
+			props.onClose();
 			setApiKey("");
 			setSelectedRegion("china-mainland");
-
-			// Call onSuccess callback to dismiss the banner
 			props.onSuccess?.();
 		} catch (error) {
 			console.error("Failed to create GLM config:", error);
@@ -67,116 +61,94 @@ export function GLMDialog(props: {
 	};
 
 	return (
-		<Dialog open={isOpen} onOpenChange={setIsOpen}>
-			<DialogTrigger asChild>{props.trigger}</DialogTrigger>
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>
-						{selectedRegion === "z-ai"
-							? t("glm.configZai")
-							: t("glm.configZhipu")}
-					</DialogTitle>
-					<DialogDescription>
-						{t("glm.description", {
-							provider: selectedRegion === "z-ai" ? "Z.ai" : t("glm.zhipu"),
-						})}
-					</DialogDescription>
-				</DialogHeader>
-				<div className="mt-4">
-					<div className="space-y-3">
-						<div>
-							<div className="my-4 flex  items-center gap-3">
-								<NativeSelect
-									value={selectedRegion}
-									onChange={(e) => setSelectedRegion(e.target.value)}
-									className="w-full mt-1"
-								>
-									<NativeSelectOption value="china-mainland">
-										{t("glm.chinaMainland")}
-									</NativeSelectOption>
-									<NativeSelectOption value="z-ai">
-										{t("glm.international")}
-									</NativeSelectOption>
-								</NativeSelect>
-							</div>
-							<h2 className="text-card-foreground text-sm font-medium flex items-center gap-2">
-								{t("glm.step1")}
-							</h2>
-							<div className="space-y-2 bg-secondary p-3 rounded-lg m-2">
-								<Button
-									onClick={(_) => {
-										const url =
-											selectedRegion === "z-ai"
-												? "https://z.ai/subscribe?ic=EBGYZCJRYJ"
-												: "https://www.bigmodel.cn/claude-code?ic=UP1VEQEATH";
-										openUrl(url);
-									}}
-									size="sm"
-									variant="outline"
-									className="text-sm"
-								>
-									<ExternalLinkIcon />
-									{t("glm.buyFromOfficial")}
-								</Button>
-								<p className="text-muted-foreground text-sm flex items-center gap-1">
-									{t("glm.discount")}
-								</p>
-							</div>
-						</div>
+		<Modal
+			centered
+			opened={props.opened}
+			onClose={props.onClose}
+			title={isZai ? t("glm.configZai") : t("glm.configZhipu")}
+			radius="lg"
+		>
+			<Stack gap="lg">
+				<Text size="sm" c="dimmed">
+					{t("glm.description", {
+						provider: isZai ? "Z.ai" : t("glm.zhipu"),
+					})}
+				</Text>
 
-						<div>
-							<h2 className="text-card-foreground text-sm font-medium flex items-center gap-2">
-								{t("glm.step2")}
-							</h2>
-							<div className="space-y-2 bg-secondary p-3 rounded-lg m-2">
-								<Button
-									onClick={(_) => {
-										const url =
-											selectedRegion === "z-ai"
-												? "https://z.ai/manage-apikey/apikey-list"
-												: "https://bigmodel.cn/usercenter/proj-mgmt/apikeys";
-										openUrl(url);
-									}}
-									size="sm"
-									variant="outline"
-									className="text-sm"
-								>
-									<ExternalLinkIcon />
-									{t("glm.enterConsole")}
-								</Button>
-							</div>
-						</div>
+				<NativeSelect
+					label={t("glm.region") as string}
+					value={selectedRegion}
+					onChange={(e) => setSelectedRegion(e.target.value)}
+					data={[
+						{ value: "china-mainland", label: t("glm.chinaMainland") },
+						{ value: "z-ai", label: t("glm.international") },
+					]}
+					radius="md"
+				/>
 
-						<div>
-							<h2 className="text-card-foreground text-sm font-medium flex items-center gap-2">
-								{t("glm.step3")}
-							</h2>
-							<div className="space-y-2 bg-secondary p-3 rounded-lg m-2">
-								<Input
-									value={apiKey}
-									onChange={(e) => setApiKey(e.target.value)}
-									placeholder={
-										selectedRegion === "z-ai"
-											? t("glm.zaiApiKeyPlaceholder")
-											: t("glm.zhipuApiKeyPlaceholder")
-									}
-								/>
-							</div>
-						</div>
+				<Stack gap="xs">
+					<Text size="sm" fw={500}>
+						{t("glm.step1")}
+					</Text>
+					<Anchor
+						size="sm"
+						onClick={() => {
+							const url = isZai
+								? "https://z.ai/subscribe?ic=EBGYZCJRYJ"
+								: "https://www.bigmodel.cn/claude-code?ic=UP1VEQEATH";
+							openUrl(url);
+						}}
+						style={{ cursor: "pointer" }}
+					>
+						<ExternalLinkIcon size={12} style={{ display: "inline", marginRight: 4, verticalAlign: "middle" }} />
+						{t("glm.buyFromOfficial")}
+					</Anchor>
+					<Text size="xs" c="dimmed">
+						{t("glm.discount")}
+					</Text>
+				</Stack>
 
-						<div className="flex justify-end mx-2 mt-2">
-							<Button
-								onClick={handleCreateConfig}
-								disabled={!apiKey.trim() || createConfigMutation.isPending}
-							>
-								{createConfigMutation.isPending
-									? t("glm.creating")
-									: t("glm.createConfig")}
-							</Button>
-						</div>
-					</div>
-				</div>
-			</DialogContent>
-		</Dialog>
+				<Stack gap="xs">
+					<Text size="sm" fw={500}>
+						{t("glm.step2")}
+					</Text>
+					<Anchor
+						size="sm"
+						onClick={() => {
+							const url = isZai
+								? "https://z.ai/manage-apikey/apikey-list"
+								: "https://bigmodel.cn/usercenter/proj-mgmt/apikeys";
+							openUrl(url);
+						}}
+						style={{ cursor: "pointer" }}
+					>
+						<ExternalLinkIcon size={12} style={{ display: "inline", marginRight: 4, verticalAlign: "middle" }} />
+						{t("glm.enterConsole")}
+					</Anchor>
+				</Stack>
+
+				<PasswordInput
+					label={t("glm.step3")}
+					value={apiKey}
+					onChange={(e) => setApiKey(e.target.value)}
+					placeholder={
+						isZai
+							? t("glm.zaiApiKeyPlaceholder")
+							: t("glm.zhipuApiKeyPlaceholder")
+					}
+					radius="md"
+				/>
+
+				<Button
+					fullWidth
+					radius="md"
+					onClick={handleCreateConfig}
+					disabled={!apiKey.trim() || createConfigMutation.isPending}
+					loading={createConfigMutation.isPending}
+				>
+					{t("glm.createConfig")}
+				</Button>
+			</Stack>
+		</Modal>
 	);
 }

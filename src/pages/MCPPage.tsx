@@ -12,6 +12,7 @@ import {
 import { Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { match } from "ts-pattern";
+import { PageHeader } from "@/components/PageHeader";
 import {
 	Accordion,
 	AccordionContent,
@@ -95,48 +96,37 @@ function MCPPageContent() {
 
 	return (
 		<div className="">
-			<div
-				className="flex items-center p-3 border-b px-3 justify-between sticky top-0 bg-background z-10"
-				data-tauri-drag-region
-			>
-				<div data-tauri-drag-region>
-					<h3 className="font-bold" data-tauri-drag-region>
-						{t("mcp.title")}
-					</h3>
-					<p className="text-sm text-muted-foreground" data-tauri-drag-region>
-						{t("mcp.description")}
-					</p>
-				</div>
-				<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-					<DialogTrigger asChild>
-						<Button variant="ghost" className="text-muted-foreground" size="sm">
-							<PlusIcon size={14} />
-							{t("mcp.addServer")}
-						</Button>
-					</DialogTrigger>
-					<DialogContent className="max-w-[700px] h-[500px]">
-						<DialogHeader>
-							<DialogTitle className="text-primary text-sm">
-								{t("mcp.addServerTitle")}
-							</DialogTitle>
-							<DialogDescription className="text-muted-foreground text-sm">
-								{t("mcp.addServerDescription")}
-							</DialogDescription>
-						</DialogHeader>
-						<div className="py-3 mt-3">
-							<MCPCreatePanel onClose={() => setIsDialogOpen(false)} />
-						</div>
-						{/* <div className="flex justify-end">
-              <Button
-                variant="outline"
-                onClick={() => setIsDialogOpen(false)}
-              >
-                关闭
-              </Button>
-            </div> */}
-					</DialogContent>
-				</Dialog>
-			</div>
+			<PageHeader
+				title={t("mcp.title")}
+				description={t("mcp.description")}
+				actions={
+					<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+						<DialogTrigger asChild>
+							<Button
+								variant="ghost"
+								className="text-muted-foreground"
+								size="sm"
+							>
+								<PlusIcon size={14} />
+								{t("mcp.addServer")}
+							</Button>
+						</DialogTrigger>
+						<DialogContent className="max-w-[700px] h-[500px]">
+							<DialogHeader>
+								<DialogTitle className="text-primary text-sm">
+									{t("mcp.addServerTitle")}
+								</DialogTitle>
+								<DialogDescription className="text-muted-foreground text-sm">
+									{t("mcp.addServerDescription")}
+								</DialogDescription>
+							</DialogHeader>
+							<div className="py-3 mt-3">
+								<MCPCreatePanel onClose={() => setIsDialogOpen(false)} />
+							</div>
+						</DialogContent>
+					</Dialog>
+				}
+			/>
 			<div className="">
 				{serverEntries.length === 0 ? (
 					<div className="text-center text-muted-foreground py-8">

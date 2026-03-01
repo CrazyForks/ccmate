@@ -11,144 +11,107 @@ import {
 } from "lucide-react";
 import type React from "react";
 import { useTranslation } from "react-i18next";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { cn, isMacOS } from "../lib/utils";
 import { UpdateButton } from "./UpdateButton";
-import { ScrollArea } from "./ui/scroll-area";
 
 export function Layout() {
 	const { t } = useTranslation();
-	const location = useLocation();
-	const isProjectsRoute = location.pathname.startsWith("/projects");
 
-	const navLinks = [
-		{
-			to: "/",
-			icon: FileJsonIcon,
-			label: t("navigation.configurations"),
-		},
-		{
-			to: "/projects",
-			icon: FolderIcon,
-			label: t("navigation.projects"),
-		},
-		{
-			to: "/mcp",
-			icon: CpuIcon,
-			label: t("navigation.mcp"),
-		},
-		{
-			to: "/agents",
-			icon: BotIcon,
-			label: "Agents",
-		},
-		{
-			to: "/memory",
-			icon: BrainIcon,
-			label: t("navigation.memory"),
-		},
-		{
-			to: "/commands",
-			icon: TerminalIcon,
-			label: t("navigation.commands"),
-		},
-		{
-			to: "/notification",
-			icon: BellIcon,
-			label: t("navigation.notifications"),
-		},
-		{
-			to: "/usage",
-			icon: ActivityIcon,
-			label: t("navigation.usage"),
-		},
-		{
-			to: "/settings",
-			icon: SettingsIcon,
-			label: t("navigation.settings"),
-		},
+	const navGroups = [
+		[
+			{ to: "/", icon: FileJsonIcon, label: t("navigation.configurations") },
+			{ to: "/projects", icon: FolderIcon, label: t("navigation.projects") },
+		],
+		[
+			{ to: "/mcp", icon: CpuIcon, label: t("navigation.mcp") },
+			{ to: "/agents", icon: BotIcon, label: "Agents" },
+			{ to: "/memory", icon: BrainIcon, label: t("navigation.memory") },
+			{
+				to: "/commands",
+				icon: TerminalIcon,
+				label: t("navigation.commands"),
+			},
+		],
+		[
+			{
+				to: "/notification",
+				icon: BellIcon,
+				label: t("navigation.notifications"),
+			},
+			{ to: "/usage", icon: ActivityIcon, label: t("navigation.usage") },
+			{
+				to: "/settings",
+				icon: SettingsIcon,
+				label: t("navigation.settings"),
+			},
+		],
 	];
 
-	return (
-		<div className="min-h-screen bg-background flex flex-col">
-			{/* Custom Title Bar - Draggable Region with traffic lights space (macOS only) */}
-			{isMacOS && (
-				<div
-					data-tauri-drag-region
-					className=""
-					style={
-						{
-							WebkitUserSelect: "none",
-							WebkitAppRegion: "drag",
-						} as React.CSSProperties
-					}
-				></div>
-			)}
+	const dragRegionStyle = {
+		WebkitUserSelect: "none",
+		WebkitAppRegion: "drag",
+	} as React.CSSProperties;
 
-			<div className="flex flex-1 overflow-hidden ">
-				<nav
-					className="w-[200px] bg-background border-r flex flex-col"
+	return (
+		<div className="flex h-screen">
+			{/* Sidebar */}
+			<nav
+				data-tauri-drag-region
+				style={dragRegionStyle}
+				className="w-[220px] shrink-0 flex flex-col border-r border-border/40"
+			>
+				{isMacOS && (
+					<div
+						data-tauri-drag-region
+						className="h-10 shrink-0"
+						style={dragRegionStyle}
+					/>
+				)}
+				<div
+					className="flex flex-col flex-1 justify-between px-3 pt-1"
 					data-tauri-drag-region
 				>
-					{isMacOS && (
-						<div
-							data-tauri-drag-region
-							className="h-10"
-							style={
-								{
-									WebkitUserSelect: "none",
-									WebkitAppRegion: "drag",
-								} as React.CSSProperties
-							}
-						></div>
-					)}
-					<div
-						className="flex flex-col flex-1 justify-between"
-						data-tauri-drag-region
-					>
-						<ul className="px-3 pt-3 space-y-2">
-							{navLinks.map((link) => (
-								<li key={link.to}>
+					<div>
+						{navGroups.map((group, gi) => (
+							<div
+								key={gi}
+								className={cn("space-y-0.5", gi > 0 && "mt-5")}
+							>
+								{group.map((link) => (
 									<NavLink
+										key={link.to}
 										to={link.to}
-										className={({ isActive }) =>
+										end={link.to === "/"}
+										className={({ isActive: active }) =>
 											cn(
-												"flex items-center gap-2 px-3 py-2 rounded-xl cursor-default select-none ",
-												{
-													"bg-primary text-primary-foreground": isActive,
-													"hover:bg-accent hover:text-accent-foreground":
-														!isActive,
-												},
+												"flex items-center gap-3 px-3 py-1.5 text-[13px] rounded-md transition-colors duration-150",
+												active
+													? "text-foreground font-medium bg-foreground/[0.05]"
+													: "text-muted-foreground hover:text-foreground hover:bg-foreground/[0.03]",
 											)
 										}
 									>
-										<link.icon size={14} />
+										<link.icon size={16} strokeWidth={1.5} />
 										{link.label}
 									</NavLink>
-								</li>
-							))}
-						</ul>
-
-						<div className="space-y-2">
-							<UpdateButton />
-						</div>
+								))}
+							</div>
+						))}
 					</div>
-				</nav>
-				{isProjectsRoute ? (
-					<main
-						className="flex-1 h-screen overflow-hidden"
-						data-tauri-drag-region
-					>
-						<Outlet />
-					</main>
-				) : (
-					<ScrollArea className="flex-1 h-screen [&>div>div]:!block">
-						<main className="" data-tauri-drag-region>
-							<Outlet />
-						</main>
-					</ScrollArea>
-				)}
-			</div>
+					<div className="pb-3">
+						<UpdateButton />
+					</div>
+				</div>
+			</nav>
+
+			{/* Main content */}
+			<main
+				data-tauri-drag-region
+				className="flex-1 min-w-0 h-screen overflow-y-auto"
+			>
+				<Outlet />
+			</main>
 		</div>
 	);
 }

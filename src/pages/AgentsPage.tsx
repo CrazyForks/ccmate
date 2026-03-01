@@ -5,6 +5,7 @@ import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { BotIcon, PlusIcon, SaveIcon, TrashIcon } from "lucide-react";
 import { Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { PageHeader } from "@/components/PageHeader";
 import {
 	Accordion,
 	AccordionContent,
@@ -87,38 +88,35 @@ function AgentsPageContent() {
 
 	return (
 		<div className="">
-			<div
-				className="flex items-center p-3 border-b px-3 justify-between sticky top-0 bg-background z-10"
-				data-tauri-drag-region
-			>
-				<div data-tauri-drag-region>
-					<h3 className="font-bold" data-tauri-drag-region>
-						{t("agents.title")}
-					</h3>
-					<p className="text-sm text-muted-foreground" data-tauri-drag-region>
-						{t("agents.description")}
-					</p>
-				</div>
-				<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-					<DialogTrigger asChild>
-						<Button variant="ghost" className="text-muted-foreground" size="sm">
-							<PlusIcon size={14} />
-							{t("agents.addAgent")}
-						</Button>
-					</DialogTrigger>
-					<DialogContent className="max-w-[600px]">
-						<DialogHeader>
-							<DialogTitle className="">
-								{t("agents.addAgentTitle")}
-							</DialogTitle>
-							<DialogDescription className="text-muted-foreground text-sm">
-								{t("agents.addAgentDescription")}
-							</DialogDescription>
-						</DialogHeader>
-						<CreateAgentPanel onClose={() => setIsDialogOpen(false)} />
-					</DialogContent>
-				</Dialog>
-			</div>
+			<PageHeader
+				title={t("agents.title")}
+				description={t("agents.description")}
+				actions={
+					<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+						<DialogTrigger asChild>
+							<Button
+								variant="ghost"
+								className="text-muted-foreground"
+								size="sm"
+							>
+								<PlusIcon size={14} />
+								{t("agents.addAgent")}
+							</Button>
+						</DialogTrigger>
+						<DialogContent className="max-w-[600px]">
+							<DialogHeader>
+								<DialogTitle className="">
+									{t("agents.addAgentTitle")}
+								</DialogTitle>
+								<DialogDescription className="text-muted-foreground text-sm">
+									{t("agents.addAgentDescription")}
+								</DialogDescription>
+							</DialogHeader>
+							<CreateAgentPanel onClose={() => setIsDialogOpen(false)} />
+						</DialogContent>
+					</Dialog>
+				}
+			/>
 			<div className="">
 				{!agents || agents.length === 0 ? (
 					<div className="text-center text-muted-foreground py-8">

@@ -4,61 +4,31 @@ import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { SaveIcon } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useClaudeMemory, useWriteClaudeMemory } from "@/lib/query";
 import { useCodeMirrorTheme } from "@/lib/use-codemirror-theme";
 
-function MemoryPageHeader({
-	onSave,
-	saving,
-}: {
-	onSave: () => void;
-	saving: boolean;
-}) {
-	const { t } = useTranslation();
-
-	return (
-		<div
-			className="flex items-center p-3 border-b px-3 justify-between sticky top-0 bg-background z-10"
-			data-tauri-drag-region
-		>
-			<div data-tauri-drag-region>
-				<h3 className="font-bold" data-tauri-drag-region>
-					{t("memory.title")}
-				</h3>
-				<p className="text-sm text-muted-foreground">
-					{t("memory.description")}
-				</p>
-			</div>
-			<Button
-				onClick={onSave}
-				disabled={saving}
-				variant="default"
-				size="sm"
-				className="flex items-center gap-2"
-			>
-				<SaveIcon className="w-4 h-4" />
-				{saving ? t("memory.saving") : t("memory.save")}
-			</Button>
-		</div>
-	);
-}
-
 function MemoryPageSkeleton() {
 	return (
 		<div className="flex flex-col h-screen">
 			<div
-				className="flex items-center p-3 border-b px-3 justify-between sticky top-0 bg-background z-10"
+				className="sticky top-0 z-10 bg-background/80 backdrop-blur-md"
 				data-tauri-drag-region
 			>
-				<div data-tauri-drag-region>
-					<Skeleton className="h-6 w-16 mb-2" />
-					<Skeleton className="h-4 w-64" />
+				<div
+					className="flex items-center justify-between px-5 pt-5 pb-3"
+					data-tauri-drag-region
+				>
+					<div data-tauri-drag-region>
+						<Skeleton className="h-6 w-16 mb-2" />
+						<Skeleton className="h-4 w-64" />
+					</div>
+					<Skeleton className="h-8 w-16" />
 				</div>
-				<Skeleton className="h-8 w-16" />
 			</div>
-			<div className="flex-1 p-4 overflow-hidden">
+			<div className="flex-1 px-5 pb-5 overflow-hidden">
 				<div className="rounded-lg overflow-hidden border h-full">
 					<div className="h-full flex items-center justify-center">
 						<div className="space-y-2 w-full max-w-2xl">
@@ -76,6 +46,7 @@ function MemoryPageSkeleton() {
 }
 
 function MemoryPageContent() {
+	const { t } = useTranslation();
 	const { data: memoryData } = useClaudeMemory();
 	const { mutate: saveMemory, isPending: saving } = useWriteClaudeMemory();
 	const [content, setContent] = useState<string>("");
@@ -110,9 +81,24 @@ function MemoryPageContent() {
 
 	return (
 		<div className="flex flex-col h-screen">
-			<MemoryPageHeader onSave={handleSave} saving={saving} />
+			<PageHeader
+				title={t("memory.title")}
+				description={t("memory.description")}
+				actions={
+					<Button
+						onClick={handleSave}
+						disabled={saving}
+						variant="default"
+						size="sm"
+						className="flex items-center gap-2"
+					>
+						<SaveIcon className="w-4 h-4" />
+						{saving ? t("memory.saving") : t("memory.save")}
+					</Button>
+				}
+			/>
 
-			<div className="flex-1 p-4 overflow-hidden">
+			<div className="flex-1 px-5 pb-5 overflow-hidden">
 				<div className="rounded-lg overflow-hidden border h-full">
 					<CodeMirror
 						value={content}

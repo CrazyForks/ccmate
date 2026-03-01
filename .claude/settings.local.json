@@ -37,7 +37,9 @@
       "Bash(git push:*)",
       "Bash(gh issue view:*)",
       "Bash(gh:*)",
-      "Bash(shasum:*)"
+      "Bash(shasum:*)",
+      "mcp__context7__query-docs",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []

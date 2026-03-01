@@ -130,16 +130,16 @@ export function Detail() {
 		return (
 			<div className="">
 				<div
-					className="flex items-center p-3 border-b px-3 justify-between sticky top-0 bg-background z-10 mb-4"
+					className="flex items-center px-5 pt-5 pb-3 justify-between sticky top-0 bg-background/80 backdrop-blur-md z-10"
 					data-tauri-drag-region
 				>
 					<div data-tauri-drag-region>
-						<h3 className="font-bold" data-tauri-drag-region>
+						<h3 className="text-base font-semibold tracking-tight" data-tauri-drag-region>
 							{t("projects.detail.editor")}
 						</h3>
 					</div>
 				</div>
-				<div className="space-y-6 px-4">
+				<div className="space-y-6 px-5">
 					<div className="flex items-center justify-center py-8">
 						<div className="text-sm text-muted-foreground">
 							{t("projects.detail.loading")}
@@ -180,16 +180,16 @@ export function Detail() {
 		return (
 			<div className="">
 				<div
-					className="flex items-center p-3 border-b px-3 justify-between sticky top-0 bg-background z-10 mb-4"
+					className="flex items-center px-5 pt-5 pb-3 justify-between sticky top-0 bg-background/80 backdrop-blur-md z-10"
 					data-tauri-drag-region
 				>
 					<div data-tauri-drag-region>
-						<h3 className="font-bold" data-tauri-drag-region>
+						<h3 className="text-base font-semibold tracking-tight" data-tauri-drag-region>
 							{t("projects.detail.editor")}
 						</h3>
 					</div>
 				</div>
-				<div className="space-y-6 px-4">
+				<div className="space-y-6 px-5">
 					<Alert>
 						<AlertDescription>
 							{t("projects.detail.projectNotFound", { path: decodedPath })}
@@ -207,7 +207,7 @@ export function Detail() {
 	return (
 		<div className="flex flex-col h-screen">
 			<div
-				className="flex items-center px-4 justify-between py-3 border-b"
+				className="flex items-center px-5 justify-between py-3 bg-background/80 backdrop-blur-md sticky top-0 z-10"
 				data-tauri-drag-region
 			>
 				<div className="flex items-center gap-2">
