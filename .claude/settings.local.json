@@ -36,7 +36,8 @@
       "Bash(gh repo create:*)",
       "Bash(git push:*)",
       "Bash(gh issue view:*)",
-      "Bash(gh:*)"
+      "Bash(gh:*)",
+      "Bash(shasum:*)"
     ],
     "deny": [],
     "ask": []
