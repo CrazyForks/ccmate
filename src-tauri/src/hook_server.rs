@@ -74,7 +74,7 @@ async fn handle_hook_event(Json(payload): Json<HookEvent>, app_handle: Arc<tauri
         send_hook_notification(&payload, &app_handle).await;
     }
 
-    (StatusCode::OK, "Hook received")
+    (StatusCode::OK, Json(serde_json::json!({"status": "ok"})))
 }
 
 // Send notification based on hook event type
