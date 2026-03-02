@@ -6,7 +6,7 @@
 
 [Download Latest Release](https://randynamic.org/ccmate) • [Report Issues](https://github.com/djyde/ccmate/issues) • [Contributing Guide](CONTRIBUTING.md)
 
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0) [![Homebrew](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/djyde/brew/main/Casks/ccmate.rb&query=$.version&label=homebrew&color=blue)](https://github.com/djyde/brew)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0) [![Homebrew](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/djyde/brew/main/Casks/ccmate.rb&query=$.version&label=homebrew&color=blue)](https://github.com/djyde/brew) [![Downloads](https://img.shields.io/github/downloads/djyde/ccmate-release/total?label=downloads&color=brightgreen)](https://github.com/djyde/ccmate-release/releases)
 
 </div>
 
