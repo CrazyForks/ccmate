@@ -8,6 +8,7 @@ import { ConfigSwitcherPage } from "./pages/ConfigSwitcherPage";
 import { MCPPage } from "./pages/MCPPage";
 import { MemoryPage } from "./pages/MemoryPage";
 import { NotificationPage } from "./pages/NotificationPage";
+import { OverviewPage } from "./pages/OverviewPage";
 import { Detail } from "./pages/projects/Detail";
 import { ProjectsLayout } from "./pages/projects/Layout";
 import { List } from "./pages/projects/List";
@@ -25,6 +26,14 @@ const router = createBrowserRouter([
 		children: [
 			{
 				index: true,
+				element: (
+					<RouteWrapper>
+						<OverviewPage />
+					</RouteWrapper>
+				),
+			},
+			{
+				path: "configs",
 				element: (
 					<RouteWrapper>
 						<ConfigSwitcherPage />

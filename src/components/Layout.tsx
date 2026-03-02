@@ -6,6 +6,7 @@ import {
 	CpuIcon,
 	FileJsonIcon,
 	FolderIcon,
+	HomeIcon,
 	MonitorIcon,
 	MoonIcon,
 	SettingsIcon,
@@ -34,7 +35,8 @@ export function Layout() {
 
 	const navGroups = [
 		[
-			{ to: "/", icon: FileJsonIcon, label: t("navigation.configurations") },
+			{ to: "/", icon: HomeIcon, label: t("navigation.overview") },
+			{ to: "/configs", icon: FileJsonIcon, label: t("navigation.configurations") },
 			{ to: "/projects", icon: FolderIcon, label: t("navigation.projects") },
 		],
 		[

@@ -314,6 +314,7 @@ export const useGlobalMcpServers = () => {
 	return useSuspenseQuery({
 		queryKey: ["global-mcp-servers"],
 		queryFn: () => invoke<Record<string, McpServer>>("get_global_mcp_servers"),
+		staleTime: 30000,
 	});
 };
 
@@ -411,6 +412,7 @@ export const useProjectUsageFiles = () => {
 	return useQuery({
 		queryKey: ["project-usage-files"],
 		queryFn: () => invoke<ProjectUsageRecord[]>("read_project_usage_files"),
+		staleTime: 30000,
 	});
 };
 
