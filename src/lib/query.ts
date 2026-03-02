@@ -620,6 +620,25 @@ export const useDeleteClaudeAgent = () => {
 	});
 };
 
+// Experimental settings hooks
+export const useWriteExperimentalSettings = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (content: unknown) =>
+			invoke<void>("write_config_file", { configType: "user", content }),
+		onSuccess: () => {
+			notifications.show({ message: i18n.t("experimental.saved"), color: "green" });
+			queryClient.invalidateQueries({ queryKey: ["config-file", "user"] });
+		},
+		onError: (error) => {
+			const errorMessage =
+				error instanceof Error ? error.message : String(error);
+			notifications.show({ message: i18n.t("experimental.saveFailed", { error: errorMessage }), color: "red" });
+		},
+	});
+};
+
 // Helper function to rebuild tray menu
 const rebuildTrayMenu = async () => {
 	try {

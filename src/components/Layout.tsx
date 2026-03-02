@@ -5,6 +5,7 @@ import {
 	BrainIcon,
 	CpuIcon,
 	FileJsonIcon,
+	FlaskConicalIcon,
 	FolderIcon,
 	HomeIcon,
 	MonitorIcon,
@@ -47,6 +48,11 @@ export function Layout() {
 				to: "/commands",
 				icon: TerminalIcon,
 				label: t("navigation.commands"),
+			},
+			{
+				to: "/experimental",
+				icon: FlaskConicalIcon,
+				label: t("navigation.experimental"),
 			},
 		],
 		[
